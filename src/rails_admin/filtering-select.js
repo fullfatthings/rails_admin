@@ -6,11 +6,8 @@ import I18n from "./i18n";
 (function ($) {
   "use strict";
 
-  $.widget("ra.filteringSelect", {
+  $.widget("ra.filteringSelect", $.ra.abstractSelect, {
     options: {
-      createQuery: function (query) {
-        return { query: query };
-      },
       minLength: 0,
       searchDelay: 200,
       remote_source: null,
@@ -300,6 +297,7 @@ import I18n from "./i18n";
     destroy: function () {
       this.input.remove();
       this.button.remove();
+      this.element.html($('<option value="" selected="selected"></option>'));
       this.element.show();
       this.filtering_select.remove();
       $.Widget.prototype.destroy.call(this);

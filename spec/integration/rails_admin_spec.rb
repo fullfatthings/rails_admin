@@ -197,19 +197,26 @@ RSpec.describe RailsAdmin, type: :request do
       is_expected.to have_content 'Details for Player'
     end
 
-    it 'triggers rails_admin:dom_ready right after a validation error' do
+    it 'triggers rails_admin.dom_ready right after a validation error' do
       visit edit_path(model_name: 'player', id: player.id)
       fill_in 'player[name]', with: 'on steroids'
       find_button('Save').trigger 'click'
       is_expected.to have_content 'Player failed to be updated'
       is_expected.to have_css '.filtering-select[data-input-for="player_team_id"]'
     end
+
+    it 'does not prefetch pages' do
+      allow_any_instance_of(RailsAdmin::Config::Actions::Index).to receive(:controller).and_raise('index prefetched')
+      visit dashboard_path
+      find('.sidebar a.nav-link[href$="/player"]').hover
+      sleep 0.3 # Turbo waits 100ms before prefetch
+    end
   end
 
   describe 'dom_ready events', js: true do
     it 'trigger properly' do
       visit dashboard_path
-      expect(evaluate_script('domReadyTriggered')).to match_array %w[plainjs/colon plainjs/dot jquery/colon jquery/dot]
+      expect(evaluate_script('domReadyTriggered')).to match_array %w[plainjs/dot jquery/dot]
     end
   end
 
