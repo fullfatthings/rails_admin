@@ -44,6 +44,29 @@ RSpec.describe 'Boolean field', type: :request do
     end
   end
 
+  context 'when the boolean is in an embedded document' do
+    before do
+      RailsAdmin.config FieldTest do
+        field :comment
+      end
+
+      RailsAdmin.config Comment do
+        field :content, :boolean
+      end
+    end
+
+    it 'can be updated', js: true do
+      visit edit_path(model_name: 'field_test', id: field_test.id)
+
+      # toggle open the embedded document section
+      find('#field_test_comment_attributes_field .add_nested_fields').click
+      # set the value to false and assert the values
+      find('.boolean_type label.danger').click
+      click_button 'Save and edit'
+      expect(field_test.reload.comment.content).to eq '0'
+    end
+  end
+
   context 'if not nullable' do
     before do
       RailsAdmin.config FieldTest do
@@ -67,6 +90,30 @@ RSpec.describe 'Boolean field', type: :request do
       find('.boolean_type input').uncheck
       click_button 'Save and edit'
       expect(field_test.reload.boolean_field).to be false
+    end
+  end
+
+  context 'if the database column is not nullable', active_record: true do
+    before do
+      RailsAdmin.config FieldTest do
+        field :non_nullable_boolean_field
+      end
+    end
+
+    it 'shows a checkbox' do
+      visit new_path(model_name: 'field_test')
+      is_expected.to have_content 'New Field test'
+      is_expected.to have_css '[type="checkbox"][name="field_test[non_nullable_boolean_field]"]'
+    end
+
+    it 'can be updated' do
+      visit edit_path(model_name: 'field_test', id: field_test.id)
+      find('.boolean_type input').check
+      click_button 'Save and edit'
+      expect(field_test.reload.non_nullable_boolean_field).to be true
+      find('.boolean_type input').uncheck
+      click_button 'Save and edit'
+      expect(field_test.reload.non_nullable_boolean_field).to be false
     end
   end
 end

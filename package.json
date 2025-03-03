@@ -1,6 +1,6 @@
 {
   "name": "rails_admin",
-  "version": "3.1.1",
+  "version": "3.3.0",
   "description": "RailsAdmin is a Rails engine that provides an easy-to-use interface for managing your data.",
   "homepage": "https://github.com/railsadminteam/rails_admin",
   "license": "MIT",
@@ -22,7 +22,7 @@
     "bootstrap": "^5.1.3",
     "flatpickr": "^4.6.9",
     "jquery": "^3.6.0",
-    "jquery-ui": "^1.12.1"
+    "jquery-ui": "^1.12.1 <1.14.0"
   },
   "devDependencies": {
     "prettier": "^2.4.1"

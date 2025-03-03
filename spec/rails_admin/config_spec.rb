@@ -264,6 +264,14 @@ RSpec.describe RailsAdmin::Config do
     it 'includes models in the directory added by config.eager_load_paths' do
       expect(RailsAdmin::Config.models_pool).to include('Basketball')
     end
+
+    it 'should include a model which was configured explicitly' do
+      RailsAdmin::Config.model 'PaperTrail::Version' do
+        visible false
+      end
+
+      expect(RailsAdmin::Config.models_pool).to include('PaperTrail::Version')
+    end
   end
 
   describe '.parent_controller' do
@@ -286,7 +294,7 @@ RSpec.describe RailsAdmin::Config do
   describe '.parent_controller=' do
     context 'if RailsAdmin::ApplicationController is already loaded' do
       before do
-        # preload cotrollers (e.g. when config.eager_load = true)
+        # preload controllers (e.g. when config.eager_load = true)
         RailsAdmin::MainController
       end
 

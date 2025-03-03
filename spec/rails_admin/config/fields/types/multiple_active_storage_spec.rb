@@ -63,6 +63,15 @@ if defined?(ActiveStorage)
             expect(field.attachments[0].image?).to be_falsy
           end
         end
+
+        context 'when attachment is a PDF file' do
+          let(:record) { FactoryBot.create :field_test, active_storage_assets: [{io: StringIO.new('dummy'), filename: 'test.pdf', content_type: 'application/pdf'}] }
+          before { allow(ActiveStorage::Previewer::PopplerPDFPreviewer).to receive(:accept?).and_return(true) }
+
+          it 'returns true' do
+            expect(field.attachments[0].image?).to be_truthy
+          end
+        end
       end
 
       describe '#resource_url' do
@@ -87,6 +96,15 @@ if defined?(ActiveStorage)
 
           it 'returns original url' do
             expect(field.attachments[0].resource_url(true)).not_to match(/representations/)
+          end
+        end
+
+        context 'when attachment is a PDF file' do
+          let(:record) { FactoryBot.create :field_test, active_storage_assets: [{io: StringIO.new('dummy'), filename: 'test.pdf', content_type: 'application/pdf'}] }
+          before { allow(ActiveStorage::Previewer::PopplerPDFPreviewer).to receive(:accept?).and_return(true) }
+
+          it 'returns variant\'s url' do
+            expect(field.attachments[0].resource_url(true)).to match(/representations/)
           end
         end
       end
@@ -125,6 +143,18 @@ if defined?(ActiveStorage)
         it 'puts the direct upload url in html_attributes' do
           expect(field.html_attributes[:data]&.[](:direct_upload_url)).to eq 'http://www.example.com/rails/active_storage/direct_uploads'
         end
+      end
+    end
+
+    describe '#searchable' do
+      it 'is false' do
+        expect(field.searchable).to be false
+      end
+    end
+
+    describe '#sortable' do
+      it 'is false' do
+        expect(field.sortable).to be false
       end
     end
   end
