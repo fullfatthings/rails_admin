@@ -2,6 +2,7 @@
 
 appraise 'rails-6.0' do
   gem 'rails', '~> 6.0.0'
+  gem 'concurrent-ruby', '1.3.4' # Workaround for https://github.com/rails/rails/issues/54260
   gem 'psych', '~> 3.3'
   gem 'turbo-rails', '< 2.0.8'
 
@@ -31,6 +32,7 @@ end
 
 appraise 'rails-6.1' do
   gem 'rails', '~> 6.1.0'
+  gem 'concurrent-ruby', '1.3.4' # Workaround for https://github.com/rails/rails/issues/54260
 
   group :active_record do
     platforms :jruby do
@@ -52,8 +54,10 @@ appraise 'rails-6.1' do
 end
 
 appraise 'rails-7.0' do
-  gem 'rails', '~> 7.0.0'
+  gem 'rails', '~> 7.0.0', '7.0.8.6' # Pinning until the fix for https://github.com/basecamp/trix/issues/1209 become available in actiontext
+  gem 'concurrent-ruby', '1.3.4' # Workaround for https://github.com/rails/rails/issues/54260
   gem 'importmap-rails', require: false
+  gem 'nokogiri', '~> 1.16.0', platform: :jruby
 
   group :active_record do
     platforms :ruby, :mswin, :mingw, :x64_mingw do
@@ -110,7 +114,8 @@ appraise 'rails-8.0' do
 end
 
 appraise 'composite_primary_keys' do
-  gem 'rails', '~> 7.0.0'
+  gem 'rails', '~> 7.0.0', '7.0.8.6' # Pinning until the fix for https://github.com/basecamp/trix/issues/1209 become available in actiontext
+  gem 'concurrent-ruby', '1.3.4' # Workaround for https://github.com/rails/rails/issues/54260
 
   group :active_record do
     gem 'composite_primary_keys'
